@@ -9,9 +9,12 @@ import android.os.Bundle
 import android.os.Process
 import android.util.Base64
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -21,6 +24,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.crimera.b64.ui.theme.B64Theme
@@ -46,8 +50,7 @@ class MainActivity : ComponentActivity() {
 }
 
 fun isBase64(text: String): Boolean {
-    val b64 = """^(?:[A-Za-z\d+/]{4})*(?:[A-Za-z\d+/]{2}==|[A-Za-z\d+/]{3}=)?\$""".toRegex()
-    return b64.containsMatchIn(text)
+    return encode(decode(text))==text&&text!=""
 }
 
 fun isHttp(text: String): Boolean {
@@ -57,6 +60,14 @@ fun isHttp(text: String): Boolean {
 
 fun decode(text: String): String {
     return Base64.decode(text, Base64.DEFAULT).decodeToString()
+}
+
+fun encode(text: String): String {
+    return Base64.encode(text.encodeToByteArray(), Base64.DEFAULT).decodeToString()
+}
+
+fun toast(message: String, context: Context) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
 
 fun setClip(text: String, clipboardManager: ClipboardManager) {
@@ -85,7 +96,7 @@ fun Home(intent: Intent, context: Context) {
             intent.getStringExtra(Intent.EXTRA_TEXT).toString().replace("\"", "")
         }
         else -> {
-            "Decode"
+            ""
         }
     }
 
@@ -106,6 +117,13 @@ fun Home(intent: Intent, context: Context) {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Box(
+            Modifier
+                .size(25.dp, 15.dp)
+                .padding(0.dp, 10.dp, 0.dp, 0.dp)
+                .clip(CircleShape)
+                .background(colorScheme.outline))
+        
         OutlinedTextField(
             value = text,
             onValueChange = {
@@ -117,20 +135,24 @@ fun Home(intent: Intent, context: Context) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(150.dp)
-                .padding(10.dp)
+                .padding(15.dp, 10.dp)
         )
 
         Row(
             Modifier.padding(0.dp, 0.dp, 0.dp, 40.dp)
         ) {
             MyButton("Decode") {
-                text = Base64.decode(text, Base64.DEFAULT).decodeToString()
+                if (isBase64(text)) {
+                    text = decode(text)
+                } else {
+                    toast("Not a valid Base64", context)
+                }
             }
 
             Spacer(modifier = Modifier.padding(10.dp))
 
             MyButton("Encode") {
-                text = Base64.encode(text.encodeToByteArray(), Base64.DEFAULT).decodeToString()
+                text = encode(text)
             }
 
             Spacer(modifier = Modifier.padding(10.dp))
@@ -154,7 +176,7 @@ fun BottomSheet(intent: Intent, context: Context) {
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
-        sheetShape = ShapeDefaults.Medium,
+        sheetShape = ShapeDefaults.Large,
         sheetContent = {
             if (!sheetState.isVisible) {
                 Process.killProcess(Process.myPid())
