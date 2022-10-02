@@ -50,7 +50,15 @@ class MainActivity : ComponentActivity() {
 }
 
 fun isBase64(text: String): Boolean {
-    return encode(decode(text))==text&&text!=""
+//    Log.d("hello", text)
+//    Log.d("hello", encode(decode(text)))
+    var canDecode = try {
+        decode(text)
+        true
+    } catch (e: IllegalArgumentException) {
+        false
+    }
+    return canDecode && encode(decode(text))==text && text!=""
 }
 
 fun isHttp(text: String): Boolean {
@@ -63,7 +71,7 @@ fun decode(text: String): String {
 }
 
 fun encode(text: String): String {
-    return Base64.encode(text.encodeToByteArray(), Base64.DEFAULT).decodeToString()
+    return Base64.encode(text.encodeToByteArray(), Base64.NO_WRAP).decodeToString()
 }
 
 fun toast(message: String, context: Context) {
