@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
 fun isBase64(text: String): Boolean {
 //    Log.d("hello", text)
 //    Log.d("hello", encode(decode(text)))
-    var canDecode = try {
+    val canDecode = try {
         decode(text)
         true
     } catch (e: IllegalArgumentException) {
@@ -62,8 +62,8 @@ fun isBase64(text: String): Boolean {
 }
 
 fun isHttp(text: String): Boolean {
-    val http = """^(http|https)://""".toRegex()
-    return http.containsMatchIn(text)
+    val http = """^(http|https)://.*""".toRegex()
+    return http.matches(text)
 }
 
 fun decode(text: String): String {
@@ -184,6 +184,7 @@ fun BottomSheet(intent: Intent, context: Context) {
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
+        scrimColor = Color.Transparent,
         sheetShape = ShapeDefaults.Large,
         sheetContent = {
             if (!sheetState.isVisible) {
