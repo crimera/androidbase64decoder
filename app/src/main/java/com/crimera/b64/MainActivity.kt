@@ -50,15 +50,17 @@ class MainActivity : ComponentActivity() {
 }
 
 fun isBase64(text: String): Boolean {
-//    Log.d("hello", text)
-//    Log.d("hello", encode(decode(text)))
-    val canDecode = try {
-        decode(text)
-        true
+    return try {
+        val value = decode(text)
+//        Log.d("code", "text: $text")
+//        Log.d("code", "text: ${encodeNoPadd(value)}")
+//        Log.d("code", "value: $value")
+//        Log.d("code", "nopadd: ${encodeNoPadd(value).contains(text.toRegex())}")
+//        Log.d("code", "true?: ${(encode(value)==text || encodeNoPadd(value).contains(text.toRegex())) && text!=""}")
+        (encode(value)==text || encodeNoPadd(value).contains(text.toRegex())) && text!=""
     } catch (e: IllegalArgumentException) {
         false
     }
-    return canDecode && encode(decode(text))==text && text!=""
 }
 
 fun isHttp(text: String): Boolean {
@@ -72,6 +74,10 @@ fun decode(text: String): String {
 
 fun encode(text: String): String {
     return Base64.encode(text.encodeToByteArray(), Base64.NO_WRAP).decodeToString()
+}
+
+fun encodeNoPadd(text: String): String {
+    return Base64.encode(text.encodeToByteArray(), Base64.NO_PADDING).decodeToString()
 }
 
 fun toast(message: String, context: Context) {
