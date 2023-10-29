@@ -37,7 +37,15 @@ class MainViewModel : ViewModel() {
 
     fun decode() {
         val dataArray = _data.value.split("\n")
-        val decodedArray = dataArray.map { if (UseCases.isBase64(it)) UseCases.decode(it) else it }
+        val decodedArray = dataArray.map {
+            if (UseCases.isBase64(it)) {
+                var temp = it
+                while (UseCases.isBase64(temp)){
+                    temp = UseCases.decode(temp)
+                }
+                temp
+            } else it
+        }
         _data.value = decodedArray.joinToString("\n")
     }
 
