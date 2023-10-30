@@ -4,11 +4,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Process
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
@@ -40,8 +40,11 @@ fun Home(intent: Intent, context: Context, viewModel: MainViewModel = viewModel(
 
     Column(
         Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()
+            .padding(horizontal = 15.dp)
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedTextField(
             value = data,
@@ -50,24 +53,20 @@ fun Home(intent: Intent, context: Context, viewModel: MainViewModel = viewModel(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
-                .padding(15.dp, 10.dp)
+                .heightIn(150.dp, 300.dp)
         )
 
         Row(
-            Modifier.padding(0.dp, 0.dp, 0.dp, 40.dp)
+            Modifier.padding(0.dp, 0.dp, 0.dp, 40.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             MyButton("Decode") {
                 viewModel.decode()
             }
 
-            Spacer(modifier = Modifier.padding(10.dp))
-
             MyButton("Encode") {
                 viewModel.encode()
             }
-
-            Spacer(modifier = Modifier.padding(10.dp))
 
             MyButton(text = "Copy") {
                 viewModel.setClip(
