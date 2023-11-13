@@ -29,13 +29,13 @@ fun Home(intent: Intent, context: Context, viewModel: MainViewModel = viewModel(
 
     LaunchedEffect(Unit) {
         viewModel.init(intent)
-        viewModel.decode()
-    }
+        val d = viewModel.decode()
 
-    if (UseCases.isHttp(data)) {
-        viewModel.openLink(data, context)
-        Process.killProcess(Process.myPid())
-        exitProcess(0)
+        if (UseCases.isHttp(d)) {
+            viewModel.openLink(d, context)
+            Process.killProcess(Process.myPid())
+            exitProcess(0)
+        }
     }
 
     Column(

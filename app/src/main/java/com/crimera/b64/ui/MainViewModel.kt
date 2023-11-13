@@ -32,10 +32,10 @@ class MainViewModel : ViewModel() {
     }
 
     fun setData(text: String) {
-        _data.value = text
+        _data.update { text }
     }
 
-    fun decode() {
+    fun decode(): String {
         val dataArray = _data.value.split("\n")
         val decodedArray = dataArray.map {
             if (UseCases.isBase64(it)) {
@@ -46,7 +46,9 @@ class MainViewModel : ViewModel() {
                 temp
             } else it
         }
-        _data.value = decodedArray.joinToString("\n")
+        val shit = decodedArray.joinToString("\n")
+        setData(shit)
+        return shit
     }
 
     fun encode() {
